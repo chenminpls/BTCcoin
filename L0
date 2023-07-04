@@ -15,3 +15,21 @@ with user_summary as (
     from layerzero.send
     group by 1
 ),
+user_summary_with_rank as (
+    select *,
+        (
+        active_source_chain_count -- Count of used source chains
+        
+        + if(active_destination_chain_count >= 2, 1, 0)  -- Conducted transactions to 2 destination chains
+        + if(active_destination_chain_count >= 5, 1, 0)  -- Conducted transactions to 5 destination chains
+        + if(active_destination_chain_count >= 10, 1, 0)  -- Conducted transactions to 10 destination chains
+        
+        + if(active_months_count >= 2, 1, 0)  -- Conducted transactions during 2 distinct months
+        + if(active_months_count >= 6 , 1, 0) -- Conducted transactions during 6 distinct months
+        + if(active_months_count >= 9, 1, 0)  -- Conducted transactions during 9 distinct months
+        + if(active_months_count >= 12, 1, 0)  -- Conducted transactions during 12 distinct months
+        
+        + if(active_weeks_count >= 10, 1, 0)  -- Conducted transactions during 10 distinct weeks
+        + if(active_weeks_count >= 20, 1, 0)  -- Conducted transactions during 20 distinct weeks
+        + if(active_weeks_count >= 50, 1, 0)  -- Conducted transactions during 50 distinct weeks
+        + if(active_weeks_count >= 100, 1, 0)  -- Conducted transactions during 100 distinct weeks
